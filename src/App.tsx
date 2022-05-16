@@ -1,5 +1,5 @@
 
-import { Children, useState } from 'react';
+import { Children, useRef, useState } from 'react';
 import './App.css';
 import { GameElement } from './interface';
 import { gameArray, getRandomNumber } from './utils'
@@ -12,7 +12,7 @@ function App() {
   const [chosenElement, setChosenElement ] = useState<GameElement>()
   const initArray = [...gameArray, ...gameArray].map((element, i) => ({...element, id: i + 1}) ).slice().sort(getRandomNumber)
   const [gamelist, setGamelist] = useState<GameElement[]>(initArray)
-  let timer: ReturnType<typeof setTimeout>;
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null); ;
 
   const wrongElementsChosen = (el: GameElement) => {
     setGamelist(prestate => prestate.map(x => {
@@ -22,7 +22,7 @@ function App() {
         disabled: true
       }
     }))
-    timer = setTimeout(() => {
+    timer.current = setTimeout(() => {
       setChosenElement(undefined)
       setGamelist(prestate => prestate.map(x => {
         return {
@@ -57,7 +57,10 @@ function App() {
     }
   }
   const restart = () => {
-    clearTimeout(timer);
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+   
     setChosenElement(undefined);
     setGamelist(initArray);
   }
