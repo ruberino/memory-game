@@ -13,4 +13,7 @@ Spillet handler om å finne like bilder gjemt bak en lik bakgrunn. Spilleren ska
 
 ## Hvis tid
 - Animasjoner når bildene blir valgt.
-- etc etc fyll ut mer.
+- lag statestikk og vis etter spillet er slutt.
+- lag en logg over korrekt/feil som blir gjort når spilleren spiller
+- Lag en timer på hvor lang tid spillet tok.
+- lag en score basert på feil/tid
