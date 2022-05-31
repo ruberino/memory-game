@@ -16,10 +16,10 @@ function App() {
   const [gamelist, setGamelist] = useState<GameElement[]>(initArray);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
   const [showWinningScreen, setShowWinningScreen] = useState(false);
-  const [gameActive, setGameActive ] = useState<boolean>(false)
 
   const [time, setTime] = useSetInterval(timerRunning);
-  const [timeout, clear] = useSetTimeout()
+  const [timeout, clear] = useSetTimeout();
+
   const wrongElementsChosen = (el: GameElement) => {
     setGamelist(prestate => prestate.map(x => {
       return {
@@ -40,22 +40,23 @@ function App() {
     }, 1000)
   }
 
+  const setElementAsChosenElement = (el: GameElement) => {
+    setChosenElement(el);
+    setGamelist(prestate => prestate.map(x => {
+      return {
+        ...x,
+        shown: el.id === x.id ? true : false,
+      }
+    }))
+  }
+
   const handleElementClick = (el: GameElement) => {
     if(!timerRunning){
       setTimerRunning(true)
     }
-    if(!gameActive){
-      setGameActive(true);
-    }
     if(!chosenElement){
-      setChosenElement(el);
-      setGamelist(prestate => prestate.map(x => {
-        return {
-          ...x,
-          shown: el.id === x.id ? true : false,
-        }
-      }))
-    }else if(chosenElement && el.imgId === chosenElement.imgId && el.id !== chosenElement.id) {
+      setElementAsChosenElement(el)
+    }else if(el.imgId === chosenElement.imgId && el.id !== chosenElement.id) {
       setGamelist(prestate => prestate.map(x => {
         return {
           ...x,
