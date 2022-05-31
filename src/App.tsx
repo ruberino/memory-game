@@ -1,19 +1,25 @@
 
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { GameElement } from './interface';
-import { imageList, getRandomNumber } from './utils'
-import Backside from './static/backside.png';
+import { initArray } from './utils'
+import VictoryScreen from './components/victory/VictoryScreen';
+import GameBoard from './components/gameboard/GameBoard';
+import useSetInterval from './hooks/useSetInterval';
+import useSetTimeout from './hooks/useSetTimeout';
 
 
 
 function App() {
 
   const [chosenElement, setChosenElement ] = useState<GameElement>();
-  const initArray = [...imageList, ...imageList].map((element, i) => ({...element, id: i + 1}) ).slice().sort(getRandomNumber);
   const [gamelist, setGamelist] = useState<GameElement[]>(initArray);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [timerRunning, setTimerRunning] = useState<boolean>(false);
+  const [showWinningScreen, setShowWinningScreen] = useState(false);
+  const [gameActive, setGameActive ] = useState<boolean>(false)
 
+  const [time, setTime] = useSetInterval(timerRunning);
+  const [timeout, clear] = useSetTimeout()
   const wrongElementsChosen = (el: GameElement) => {
     setGamelist(prestate => prestate.map(x => {
       return {
@@ -22,7 +28,7 @@ function App() {
         disabled: true
       }
     }))
-    timer.current = setTimeout(() => {
+    timeout(() => {
       setChosenElement(undefined)
       setGamelist(prestate => prestate.map(x => {
         return {
@@ -35,6 +41,12 @@ function App() {
   }
 
   const handleElementClick = (el: GameElement) => {
+    if(!timerRunning){
+      setTimerRunning(true)
+    }
+    if(!gameActive){
+      setGameActive(true);
+    }
     if(!chosenElement){
       setChosenElement(el);
       setGamelist(prestate => prestate.map(x => {
@@ -56,14 +68,25 @@ function App() {
       wrongElementsChosen(el);
     }
   }
+
   const restart = () => {
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-   
+clear()
+    setShowWinningScreen(false);
     setChosenElement(undefined);
     setGamelist(initArray);
+    setTimerRunning(false);
+    setShowWinningScreen(false);
+    setTime(0);
   }
+
+  useEffect(() => {
+    const someNotShown = gamelist.some(x => !x.locked);
+    if(!someNotShown){
+      setTimerRunning(false);
+      setShowWinningScreen(true);
+    }
+  }, [gamelist])
+  
   return (
     <div className="App">
       <header className="">
@@ -73,17 +96,12 @@ function App() {
       </header>
       <main>
         <button onClick={restart}>RESTART</button>
-        <div className="game-board" >
-          {
-            gamelist.map(x => (
-              <button disabled={x.disabled || x.locked || x.shown} onClick={() => handleElementClick(x)} key={x.id} className="game-element"> 
-                <img className="game-element-img" src={ x.shown || x.locked ?  x.img : Backside } alt={`game image nr ${x.id}`} />
-              </button>
-            )
-            )
-          }
-        </div>
+        { showWinningScreen ? <VictoryScreen restart={restart} time={Math.floor(time / 100000).toString()} /> :
+        <GameBoard gamelist={gamelist} handleElementClick={handleElementClick} />}
       </main>
+      <footer>
+        &copy; Aboveit AS
+      </footer>
     </div>
   );
 }
