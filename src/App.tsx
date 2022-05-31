@@ -16,7 +16,6 @@ function App() {
   const [gamelist, setGamelist] = useState<GameElement[]>(initArray);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
   const [showWinningScreen, setShowWinningScreen] = useState(false);
-
   const [time, setTime] = useSetInterval(timerRunning);
   const [timeout, clear] = useSetTimeout();
 
@@ -71,7 +70,7 @@ function App() {
   }
 
   const restart = () => {
-clear()
+    clear();
     setShowWinningScreen(false);
     setChosenElement(undefined);
     setGamelist(initArray);
@@ -90,7 +89,7 @@ clear()
   
   return (
     <div className="App">
-      <header className="">
+      <header>
         <h1>
           MEMORY GAME
         </h1>
