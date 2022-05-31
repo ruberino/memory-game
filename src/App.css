@@ -28,7 +28,7 @@
 }
 
 .game-element:disabled {
-  cursor: progress;
+  cursor: not-allowed;
 }
 
 .game-element-img {

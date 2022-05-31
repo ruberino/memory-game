@@ -9,7 +9,7 @@ import Img6 from "./static/bilde4.png";
 
 const images = [Img1, Img2, Img3, Img4, Img5, Img6];
 
-export const gameArray: Omit<GameElement, "id">[] = images.map(
+export const imageList: Omit<GameElement, "id">[] = images.map(
   (img, index) => ({
     locked: false,
     imgId: index + 1,
