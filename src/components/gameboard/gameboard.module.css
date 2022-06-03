@@ -1,0 +1,18 @@
+.gameBoard {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  .gameElement {
+    margin: 1rem;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .gameElement:disabled {
+    cursor: not-allowed;
+  }
+  
+  .gameElementImg {
+    width: 100%;
+  }

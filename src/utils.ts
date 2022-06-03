@@ -19,3 +19,5 @@ export const imageList: Omit<GameElement, "id">[] = images.map(
 );
 
 export const getRandomNumber = () => (Math.random() > 0.5 ? 1 : -1);
+
+export const initArray = [...imageList, ...imageList].map((element, i) => ({...element, id: i + 1}) ).slice().sort(getRandomNumber);
