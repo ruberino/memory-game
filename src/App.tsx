@@ -7,18 +7,22 @@ import VictoryScreen from './components/victory/VictoryScreen';
 import GameBoard from './components/gameboard/GameBoard';
 import useSetInterval from './hooks/useSetInterval';
 import useSetTimeout from './hooks/useSetTimeout';
-
-
+import useFetchImages from './hooks/useFetchImages';
 
 function App() {
 
   const [chosenElement, setChosenElement ] = useState<GameElement>();
-  const [gamelist, setGamelist] = useState<GameElement[]>(initArray);
+  const [gamelist, setGamelist] = useState<GameElement[]>([]);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
   const [showWinningScreen, setShowWinningScreen] = useState(false);
   const [time, setTime] = useSetInterval(timerRunning);
   const [timeout, clear] = useSetTimeout();
-
+  const [imageUrls, error, loading] = useFetchImages(6)
+  useEffect(() => {
+    if(imageUrls.length > 0){
+      setGamelist(initArray(imageUrls))
+    }
+  }, [imageUrls])
   const wrongElementsChosen = (el: GameElement) => {
     setGamelist(prestate => prestate.map(x => {
       return {
@@ -73,7 +77,7 @@ function App() {
     clear();
     setShowWinningScreen(false);
     setChosenElement(undefined);
-    setGamelist(initArray);
+    setGamelist(initArray(imageUrls));
     setTimerRunning(false);
     setShowWinningScreen(false);
     setTime(0);
@@ -81,7 +85,7 @@ function App() {
 
   useEffect(() => {
     const someNotShown = gamelist.some(x => !x.locked);
-    if(!someNotShown){
+    if(!someNotShown && gamelist.length > 0){
       setTimerRunning(false);
       setShowWinningScreen(true);
     }
@@ -97,7 +101,7 @@ function App() {
       <main>
         <button onClick={restart}>RESTART</button>
         { showWinningScreen ? <VictoryScreen restart={restart} time={Math.floor(time / 100000).toString()} /> :
-        <GameBoard gamelist={gamelist} handleElementClick={handleElementClick} />}
+        <GameBoard gamelist={gamelist} handleElementClick={handleElementClick} loading={loading}/>}
       </main>
       <footer>
         &copy; Aboveit AS

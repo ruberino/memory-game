@@ -4,9 +4,13 @@ import style from './gameboard.module.css';
 type Props = {
     gamelist: GameElement[]
     handleElementClick: (el: GameElement) => void;
+    loading: boolean;
 }
 
-const GameBoard = ({gamelist, handleElementClick}: Props) => {
+const GameBoard = ({gamelist, handleElementClick, loading}: Props) => {
+    if(loading){
+      return <p>... Loading game ...</p>
+    }
     return <div className={style.gameBoard} >
     {
       gamelist.map(x => (
